@@ -172,11 +172,18 @@ class _FaceDetectionScreenState extends State<FaceDetectionScreen> {
     final inputImage = InputImage.fromFilePath(imageFile.path);
     final faces = await _detector.processImage(inputImage);
 
-    String mood = "صورة الوجه غير متاحة";
-    String advice = "حاول التصوير فى إضاءة جيدة";
+    String mood = "";
+    String advice = "صورة الوجه غير متاحة، حاول التصوير فى إضاءة جيدة";
+
+    debugPrint("faces.isNotEmpty: --------------------------  " + faces.isNotEmpty.toString());
 
     if (faces.isNotEmpty) {
       final face = faces.first;
+
+      debugPrint("faces.firstOrNull: --------------------------  " + faces.firstOrNull.toString());
+      debugPrint("faces.length: --------------------------  " + faces.length.toString());
+      debugPrint("face.smilingProbability: ----------------  " + face.smilingProbability.toString());
+
       final smileProb = face.smilingProbability;
       if (smileProb != null) {
         if (smileProb > 0.6) {
@@ -190,6 +197,9 @@ class _FaceDetectionScreenState extends State<FaceDetectionScreen> {
         }
       }
     }
+
+    debugPrint("Mood: --------------------------  " + mood);
+    debugPrint("Advice: --------------------------  " + advice);
 
     if (!mounted) return;
     Navigator.push(
@@ -307,8 +317,11 @@ class ResultScreen extends StatelessWidget {
       moodLabel = "حزين 😔";
     } else if (mood == "Depressed"){
       moodLabel = "مكتئب 😩";
-    } else{
+    } else if (mood == "Neutral"){
       moodLabel = "طبيعي 😐";
+    }
+    else {
+      moodLabel = advice;
     }
 
     return Scaffold(
